@@ -29,13 +29,13 @@ class Follower(Base):
     __tablename__ = 'follower'
     # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
-    user_from_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    user_from_id = Column(Integer, ForeignKey('user.id'), primary_key=True, nullable=False)
     user_to_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     user = relationship(User)
 
 
 class Media(Base):
-    __tablename__ = 'user'
+    __tablename__ = 'media'
     # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
