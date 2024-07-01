@@ -7,15 +7,29 @@ from eralchemy2 import render_er
 
 Base = declarative_base()
 
+
+class Follow(Base):
+    __tablename__ = 'follow'
+    user_from_id = Column(Integer, ForeignKey('user.id'), primary_key=True, nullable=False)
+    user_to_id = Column(Integer, ForeignKey('user.id'), primary_key=True, nullable=False)
+
 class User(Base):
     __tablename__ = 'user'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
     username = Column(String(250), nullable=False)
     firstname = Column(String(250), nullable=False)
     lastname = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False, unique=True)
+    
+    # Define the many-to-many relationship
+    followed = relationship(
+        "User",
+        secondary=Follow.__table__,
+        primaryjoin=(Follow.user_from_id == id),
+        secondaryjoin=(Follow.user_to_id == id),
+        backref="followers",
+        lazy="dynamic"
+    )
 
 class Post(Base):
     __tablename__ = 'post'
@@ -25,13 +39,6 @@ class Post(Base):
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     user = relationship(User)
 
-class Follower(Base):
-    __tablename__ = 'follower'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
-    user_from_id = Column(Integer, ForeignKey('user.id'), primary_key=True, nullable=False)
-    user_to_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    user = relationship(User)
 
 
 class Media(Base):
